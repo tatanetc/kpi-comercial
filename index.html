@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comisiones - ETC v2</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --bg-light: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --card-bg: #ffffff;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        header h1 { margin: 0; font-size: 2rem; }
+        header p { margin-top: 0.5rem; opacity: 0.9; }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        /* Calculator Section */
+        .calculator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .calculator-wrapper { grid-template-columns: 1fr; }
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--text-dark); }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box; 
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+        .hint { font-size: 0.8rem; color: var(--text-light); display: block; margin-top: 3px; }
+
+        .results-panel {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .result-row.main-stat {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .result-row:last-child { border-bottom: none; }
+        .result-label { color: var(--text-light); }
+        .result-value { font-weight: 700; color: var(--text-dark); }
+        
+        .total-commission {
+            background: var(--secondary);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .total-commission .value { font-size: 1.8rem; font-weight: bold; }
+
+        /* Formula Display */
+        .formula-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 10px;
+            margin-top: 15px;
+            font-family: monospace;
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+        }
+
+        /* KPI Cards Mini */
+        .kpi-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .kpi-mini {
+            background: white;
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .kpi-mini small { display: block; color: #666; font-size: 0.7rem; }
+        .kpi-mini strong { color: var(--primary); }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 10px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th { background-color: var(--primary); color: white; }
+        tr:nth-child(even) { background-color: #f9fafb; }
+        tr.highlight { background-color: #dbeafe; border-left: 5px solid var(--secondary); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Emprende Tu Carrera</h1>
+    <p>Calculadora de Comisiones v2.0</p>
+</header>
+
+<div class="container">
+
+    <h2 class="section-title">🧮 Simulador de Comisiones</h2>
+    <p style="margin-bottom: 20px; color: #666;">Ingresa el total recaudado y la cantidad de suscripciones. El sistema calculará tu promedio automáticamente.</p>
+    
+    <div class="calculator-wrapper">
+        <div class="inputs-panel">
+            <div class="form-group">
+                <label>1. Número de Suscripciones Realizadas</label>
+                <input type="number" id="numSubs" value="20" placeholder="Ej: 20" oninput="calculate()">
+            </div>
+            
+            <div class="form-group">
+                <label>2. Recaudo BRUTO Total ($)</label>
+                <input type="number" id="grossInput" value="4640000" placeholder="Total facturado" oninput="calculate()">
+                <span class="hint">Suma total de lo que pagaron los clientes.</span>
+            </div>
+
+            <div class="form-group">
+                <label>3. Calidad Documental (%QA)</label>
+                <input type="number" id="qaPerc" value="96" max="100" placeholder="0-100" oninput="calculate()">
+            </div>
+            
+            <div class="form-group">
+                <label>4. Adherencia (%Adher)</label>
+                <input type="number" id="adherPerc" value="98" max="100" placeholder="0-100" oninput="calculate()">
+            </div>
+        </div>
+
+        <div class="results-panel">
+            <div class="result-row main-stat">
+                <span class="result-label">Promedio por Suscripción:</span>
+                <span class="result-value" id="calcAvgPrice">$0</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #666; margin-bottom: 15px; text-align: right;">
+                Meta: $229.000 <span id="priceStatus"></span>
+            </div>
+
+            <div class="result-row">
+                <span class="result-label">Recaudo Real (Base Tabla):</span>
+                <span class="result-value" id="netRevenue">$0</span>
+            </div>
+            
+            <div class="result-row">
+                <span class="result-label">Nivel Alcanzado:</span>
+                <span class="result-value" id="levelReached">Nivel 0</span>
+            </div>
+
+            <div class="formula-box">
+                <strong>Tus Multiplicadores:</strong>
+                <div class="kpi-mini-grid">
+                    <div class="kpi-mini">
+                        <small>Precio ($X̅)</small>
+                        <strong id="factorPrice">100%</strong>
+                    </div>
+                    <div class="kpi-mini">
+                        <small>Calidad (QA)</small>
+                        <strong id="factorQA">100%</strong>
+                    </div>
+                    <div class="kpi-mini">
+                        <small>Adherencia</small>
+                        <strong id="factorAdher">100%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="total-commission">
+                <div style="font-size: 0.9rem; opacity: 0.9;">Comisión a Pagar</div>
+                <div class="value" id="totalCommission">$0</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">📈 Tabla de Niveles</h2>
+    <div class="table-container">
+        <table id="commissionTable">
+            <thead>
+                <tr>
+                    <th>Nivel</th>
+                    <th>Ref. Suscripciones</th>
+                    <th>Recaudo Real Mínimo</th>
+                    <th>Tasa Base</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    // Configuración Global
+    const TARGET_PRICE = 229000;
+    const NET_FACTOR = 0.8384279475982533; // Factor neto (Bruto -> Real)
+
+    // Datos de la Tabla Comisional
+    const tableData = [
+        { level: 0, subsRef: 0, minRevenue: 0, rate: 0 },
+        { level: 1, subsRef: 13, minRevenue: 2496000, rate: 6 },
+        { level: 2, subsRef: 20, minRevenue: 3840000, rate: 8 },
+        { level: 3, subsRef: 31, minRevenue: 5952000, rate: 15 },
+        { level: 4, subsRef: 39, minRevenue: 7488000, rate: 19 },
+        { level: 5, subsRef: 47, minRevenue: 9024000, rate: 22 },
+        { level: 6, subsRef: 55, minRevenue: 10560000, rate: 25 },
+        { level: 7, subsRef: 60, minRevenue: 11520000, rate: 26 },
+        { level: 8, subsRef: 65, minRevenue: 12480000, rate: 27 },
+        { level: 9, subsRef: 70, minRevenue: 13440000, rate: 28 },
+        { level: 10, subsRef: 75, minRevenue: 14400000, rate: 29 },
+        { level: 11, subsRef: 80, minRevenue: 15360000, rate: 30 }
+    ];
+
+    const formatMoney = (amount) => {
+        return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
+    };
+
+    function renderTable(activeLevelIndex) {
+        const tbody = document.querySelector('#commissionTable tbody');
+        tbody.innerHTML = '';
+        tableData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            if (index === activeLevelIndex) tr.classList.add('highlight');
+            tr.innerHTML = `
+                <td>Nivel ${row.level}</td>
+                <td>${row.subsRef}</td>
+                <td>${formatMoney(row.minRevenue)}</td>
+                <td>${row.rate}%</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function calculate() {
+        // 1. Obtener Inputs
+        const numSubs = parseFloat(document.getElementById('numSubs').value) || 0;
+        const grossRevenue = parseFloat(document.getElementById('grossInput').value) || 0;
+        const qaPerc = parseFloat(document.getElementById('qaPerc').value) || 0;
+        const adherPerc = parseFloat(document.getElementById('adherPerc').value) || 0;
+
+        // 2. Calcular Precio Promedio (Lógica Inversa)
+        // Evitamos división por cero
+        let avgPrice = 0;
+        if (numSubs > 0) {
+            avgPrice = grossRevenue / numSubs;
+        }
+
+        // 3. Recaudo Real (Para la tabla)
+        const netRevenue = grossRevenue * NET_FACTOR;
+
+        // 4. Buscar Nivel
+        let activeLevel = tableData[0];
+        let activeIndex = 0;
+        for (let i = 0; i < tableData.length; i++) {
+            if (netRevenue >= tableData[i].minRevenue) {
+                activeLevel = tableData[i];
+                activeIndex = i;
+            } else {
+                break;
+            }
+        }
+
+        // 5. Factores
+        const factorPrice = (TARGET_PRICE > 0) ? (avgPrice / TARGET_PRICE) : 0;
+        const factorQA = qaPerc / 100;
+        const factorAdher = adherPerc / 100;
+        const baseRateDec = activeLevel.rate / 100;
+
+        // 6. Comisión Total
+        const totalCommission = grossRevenue * baseRateDec * factorPrice * factorQA * factorAdher;
+
+        // 7. Actualizar Interfaz
+        document.getElementById('calcAvgPrice').innerText = formatMoney(avgPrice);
+        
+        // Indicador visual de precio
+        const statusSpan = document.getElementById('priceStatus');
+        if(avgPrice >= TARGET_PRICE) {
+            statusSpan.innerHTML = "✅ (¡Bien!)";
+            statusSpan.style.color = "green";
+        } else {
+            statusSpan.innerHTML = "🔻 (Bajo)";
+            statusSpan.style.color = "red";
+        }
+
+        document.getElementById('netRevenue').innerText = formatMoney(netRevenue);
+        document.getElementById('levelReached').innerText = `Nivel ${activeLevel.level} (${activeLevel.rate}%)`;
+        
+        document.getElementById('factorPrice').innerText = (factorPrice * 100).toFixed(1) + '%';
+        document.getElementById('factorQA').innerText = qaPerc + '%';
+        document.getElementById('factorAdher').innerText = adherPerc + '%';
+        
+        document.getElementById('totalCommission').innerText = formatMoney(totalCommission);
+
+        renderTable(activeIndex);
+    }
+
+    // Inicio
+    renderTable(-1);
+    calculate();
+</script>
+
+</body>
+</html>
