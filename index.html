@@ -3,169 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Comisiones - ETC v2</title>
+    <title>Calculadora Comisiones - ETC v2.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --secondary: #10b981;
-            --bg-light: #f3f4f6;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --card-bg: #ffffff;
-            --warning: #f59e0b;
+            --primary: #1e3a8a;       /* Azul Corporativo */
+            --primary-light: #3b82f6; /* Azul Brillante */
+            --accent: #10b981;        /* Verde Dinero */
+            --kpi-color: #6366f1;     /* Índigo para KPI Global */
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #172554 100%);
             color: white;
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        header h1 { margin: 0; font-size: 2rem; }
-        header p { margin-top: 0.5rem; opacity: 0.9; }
+        header h1 { margin: 0; font-size: 1.6rem; font-weight: 700; }
+        header .version { 
+            font-size: 0.75rem; 
+            opacity: 0.9; 
+            background: rgba(255,255,255,0.15); 
+            padding: 2px 10px; 
+            border-radius: 12px; 
+            margin-top: 5px; 
+            display: inline-block; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Section Titles */
-        .section-title {
-            border-left: 5px solid var(--primary);
-            padding-left: 15px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-        }
-
-        /* Calculator Section */
-        .calculator-wrapper {
+        /* Grid Layout */
+        .calculator-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        @media (max-width: 768px) {
-            .calculator-wrapper { grid-template-columns: 1fr; }
+        @media (max-width: 850px) {
+            .calculator-grid { grid-template-columns: 1fr; }
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--text-dark); }
-        .form-group input {
+        /* Cards general */
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eff6ff;
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Inputs */
+        .form-group { margin-bottom: 15px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-main); }
+        
+        input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e5e7eb;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1rem;
             box-sizing: border-box; 
-        }
-        .form-group input:focus { border-color: var(--primary); outline: none; }
-        .hint { font-size: 0.8rem; color: var(--text-light); display: block; margin-top: 3px; }
-
-        .results-panel {
-            background-color: #f8fafc;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
         }
 
-        .result-row {
+        input:focus { border-color: var(--primary-light); outline: none; background-color: #f0f9ff; }
+
+        .hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; display: block; }
+
+        /* Checkbox Bono */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #bfdbfe;
+            margin-top: 15px;
+        }
+        .checkbox-wrapper input { width: 18px; height: 18px; margin-right: 12px; cursor: pointer; }
+        .checkbox-wrapper label { margin: 0; cursor: pointer; color: #1e40af; font-size: 0.95rem; }
+
+        /* Results Panel Styles */
+        .result-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 0.95rem;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
         }
+        .result-item:last-child { border-bottom: none; }
+        .result-title { color: var(--text-secondary); font-size: 0.9rem; }
+        .result-value { font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+        .highlight-value { color: var(--primary); font-size: 1.2rem; }
 
-        .result-row.main-stat {
-            font-size: 1.1rem;
-            color: var(--primary-dark);
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .result-row:last-child { border-bottom: none; }
-        .result-label { color: var(--text-light); }
-        .result-value { font-weight: 700; color: var(--text-dark); }
-        
-        .total-commission {
-            background: var(--secondary);
+        /* --- KPI GLOBAL DESTACADO --- */
+        .kpi-global-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
             color: white;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
             text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
         }
-        .total-commission .value { font-size: 1.8rem; font-weight: bold; }
-
-        /* Formula Display */
-        .formula-box {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary);
-            padding: 10px;
-            margin-top: 15px;
-            font-family: monospace;
-            color: var(--primary-dark);
-            font-size: 0.85rem;
+        .kpi-global-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .kpi-global-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        .kpi-global-value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .kpi-global-desc {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 5px;
         }
 
-        /* KPI Cards Mini */
-        .kpi-mini-grid {
+        /* Grid de Métricas Pequeñas */
+        .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-top: 10px;
+        }
+        .metric-mini {
+            background: #f1f5f9;
+            padding: 10px 5px;
+            border-radius: 8px;
             text-align: center;
+            border: 1px solid var(--border);
         }
-        .kpi-mini {
-            background: white;
-            padding: 5px;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
-        }
-        .kpi-mini small { display: block; color: #666; font-size: 0.7rem; }
-        .kpi-mini strong { color: var(--primary); }
+        .metric-mini small { display: block; font-size: 0.7rem; color: #64748b; margin-bottom: 4px; }
+        .metric-mini strong { color: var(--primary); font-size: 0.95rem; }
 
-        /* Table */
+        /* Total a Pagar */
+        .final-commission {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+        }
+        .final-commission .label { font-size: 0.85rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 1px; }
+        .final-commission .amount { font-size: 2.2rem; font-weight: 800; margin: 5px 0; }
+        .final-commission .note { font-size: 0.8rem; background: rgba(0,0,0,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-top: 5px; }
+
+        /* Tabla */
         .table-container {
             overflow-x: auto;
-            background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            background: white;
+            border: 1px solid var(--border);
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             min-width: 600px;
         }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th { background-color: var(--primary); color: white; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr.active-row { background-color: #dbeafe; border-left: 5px solid var(--primary-light); }
+        tr.active-row td { font-weight: 700; color: var(--primary); }
 
-        th, td {
-            padding: 10px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        th { background-color: var(--primary); color: white; }
-        tr:nth-child(even) { background-color: #f9fafb; }
-        tr.highlight { background-color: #dbeafe; border-left: 5px solid var(--secondary); font-weight: bold; }
+        /* Status Badges */
+        .status-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; margin-left: 5px; font-weight: 600; }
+        .status-ok { background: #dcfce7; color: #166534; }
+        .status-bad { background: #fee2e2; color: #991b1b; }
 
     </style>
 </head>
@@ -173,85 +230,113 @@
 
 <header>
     <h1>Emprende Tu Carrera</h1>
-    <p>Calculadora de Comisiones v2.0</p>
+    <span class="version">KPI v2.5</span>
 </header>
 
 <div class="container">
 
-    <h2 class="section-title">🧮 Simulador de Comisiones</h2>
-    <p style="margin-bottom: 20px; color: #666;">Ingresa el total recaudado y la cantidad de suscripciones. El sistema calculará tu promedio automáticamente.</p>
-    
-    <div class="calculator-wrapper">
-        <div class="inputs-panel">
-            <div class="form-group">
-                <label>1. Número de Suscripciones Realizadas</label>
-                <input type="number" id="numSubs" value="20" placeholder="Ej: 20" oninput="calculate()">
-            </div>
+    <div class="calculator-grid">
+        <!-- Panel de Ingreso -->
+        <div class="card">
+            <h2>📝 Ingreso de Datos</h2>
             
-            <div class="form-group">
-                <label>2. Recaudo BRUTO Total ($)</label>
-                <input type="number" id="grossInput" value="4640000" placeholder="Total facturado" oninput="calculate()">
-                <span class="hint">Suma total de lo que pagaron los clientes.</span>
-            </div>
-
-            <div class="form-group">
-                <label>3. Calidad Documental (%QA)</label>
-                <input type="number" id="qaPerc" value="96" max="100" placeholder="0-100" oninput="calculate()">
-            </div>
-            
-            <div class="form-group">
-                <label>4. Adherencia (%Adher)</label>
-                <input type="number" id="adherPerc" value="98" max="100" placeholder="0-100" oninput="calculate()">
-            </div>
-        </div>
-
-        <div class="results-panel">
-            <div class="result-row main-stat">
-                <span class="result-label">Promedio por Suscripción:</span>
-                <span class="result-value" id="calcAvgPrice">$0</span>
-            </div>
-            <div style="font-size: 0.8rem; color: #666; margin-bottom: 15px; text-align: right;">
-                Meta: $229.000 <span id="priceStatus"></span>
-            </div>
-
-            <div class="result-row">
-                <span class="result-label">Recaudo Real (Base Tabla):</span>
-                <span class="result-value" id="netRevenue">$0</span>
-            </div>
-            
-            <div class="result-row">
-                <span class="result-label">Nivel Alcanzado:</span>
-                <span class="result-value" id="levelReached">Nivel 0</span>
-            </div>
-
-            <div class="formula-box">
-                <strong>Tus Multiplicadores:</strong>
-                <div class="kpi-mini-grid">
-                    <div class="kpi-mini">
-                        <small>Precio ($X̅)</small>
-                        <strong id="factorPrice">100%</strong>
-                    </div>
-                    <div class="kpi-mini">
-                        <small>Calidad (QA)</small>
-                        <strong id="factorQA">100%</strong>
-                    </div>
-                    <div class="kpi-mini">
-                        <small>Adherencia</small>
-                        <strong id="factorAdher">100%</strong>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Suscripciones Realizadas</label>
+                    <input type="number" id="subsTotal" value="86" min="0" max="300" oninput="validateAndCalculate()">
+                    <span class="hint">Total llamadas/intentos</span>
+                </div>
+                <div class="form-group">
+                    <label>Suscripciones Aprobadas</label>
+                    <input type="number" id="subsApproved" value="84" min="0" max="300" oninput="validateAndCalculate()">
+                    <span class="hint">Ventas efectivas (Max: Realizadas)</span>
                 </div>
             </div>
 
-            <div class="total-commission">
-                <div style="font-size: 0.9rem; opacity: 0.9;">Comisión a Pagar</div>
-                <div class="value" id="totalCommission">$0</div>
+            <div class="form-group">
+                <label>Recaudo BRUTO Total ($)</label>
+                <input type="text" id="grossRevenueDisplay" placeholder="$ 0" onkeyup="formatCurrencyInput(this)">
+                <span class="hint">Valor facturado antes de impuestos (Max: $60M)</span>
+            </div>
+
+            <div class="form-group">
+                <label>% Adherencia</label>
+                <input type="number" id="adherence" value="100" min="0" max="100" oninput="validateAndCalculate()">
+                <span class="hint">Cumplimiento de horario (Max 100%)</span>
+            </div>
+
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="seniorBonusCheck" onchange="calculate()">
+                <label for="seniorBonusCheck">
+                    <strong>Activar Bono Senior</strong><br>
+                    <span style="font-size:0.8rem; font-weight: normal;">(Meta cumplida x2 meses consecutivos)</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Panel de Resultados -->
+        <div class="card">
+            <h2>📊 Liquidación</h2>
+            
+            <!-- KPI Global Destacado -->
+            <div class="kpi-global-card">
+                <div class="kpi-global-label">Rendimiento Global</div>
+                <div class="kpi-global-value" id="totalKPI">0%</div>
+                <div class="kpi-global-desc">Multiplicador aplicado a la comisión</div>
+            </div>
+
+            <!-- Desglose Métricas -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Desglose de métricas individuales:</div>
+                <div class="metrics-grid">
+                    <div class="metric-mini">
+                        <small>Precio</small>
+                        <strong id="metricPrice">0%</strong>
+                    </div>
+                    <div class="metric-mini">
+                        <small>Calidad (QA)</small>
+                        <strong id="metricQA">0%</strong>
+                    </div>
+                    <div class="metric-mini">
+                        <small>Adherencia</small>
+                        <strong id="metricAdher">0%</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-title">Promedio x Suscripción <small>(Aprobada)</small></span>
+                <span class="result-value">
+                    <span id="avgPrice">$0</span> 
+                    <span id="avgStatus"></span>
+                </span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-title">Recaudo Real (Base)</span>
+                <span class="result-value highlight-value" id="netRevenue">$0</span>
+            </div>
+            <div style="text-align: right; font-size: 0.7rem; color: #94a3b8; margin-top: -5px; margin-bottom: 10px;">
+                Impuestos descontados: <span id="taxLabel">0</span>%
+            </div>
+
+            <div class="result-item">
+                <span class="result-title">Nivel Alcanzado</span>
+                <span class="result-value" id="levelResult">Nivel 0</span>
+            </div>
+
+            <div class="final-commission">
+                <div class="label">Total a Pagar</div>
+                <div class="amount" id="totalPayment">$0</div>
+                <div class="note" id="bonusNote">Bono Senior: $0</div>
             </div>
         </div>
     </div>
 
-    <h2 class="section-title">📈 Tabla de Niveles</h2>
+    <!-- Tabla -->
+    <h2>📈 Tabla de Niveles (Base: Recaudo Real)</h2>
     <div class="table-container">
-        <table id="commissionTable">
+        <table id="levelsTable">
             <thead>
                 <tr>
                     <th>Nivel</th>
@@ -261,119 +346,221 @@
                 </tr>
             </thead>
             <tbody>
-                </tbody>
+                <!-- Contenido dinámico JS -->
+            </tbody>
         </table>
     </div>
 
 </div>
 
 <script>
-    // Configuración Global
-    const TARGET_PRICE = 229000;
-    const NET_FACTOR = 0.8384279475982533; // Factor neto (Bruto -> Real)
+    /* 
+    ================================================================
+       CONFIGURACIÓN EDITABLE (CONTROL CENTRAL)
+    ================================================================
+    */
+    
+    // 1. BONO SENIOR ($)
+    const SENIOR_BONUS_VALUE = 85000; 
 
-    // Datos de la Tabla Comisional
-    const tableData = [
-        { level: 0, subsRef: 0, minRevenue: 0, rate: 0 },
-        { level: 1, subsRef: 13, minRevenue: 2496000, rate: 6 },
-        { level: 2, subsRef: 20, minRevenue: 3840000, rate: 8 },
-        { level: 3, subsRef: 31, minRevenue: 5952000, rate: 15 },
-        { level: 4, subsRef: 39, minRevenue: 7488000, rate: 19 },
-        { level: 5, subsRef: 47, minRevenue: 9024000, rate: 22 },
-        { level: 6, subsRef: 55, minRevenue: 10560000, rate: 25 },
-        { level: 7, subsRef: 60, minRevenue: 11520000, rate: 26 },
-        { level: 8, subsRef: 65, minRevenue: 12480000, rate: 27 },
-        { level: 9, subsRef: 70, minRevenue: 13440000, rate: 28 },
-        { level: 10, subsRef: 75, minRevenue: 14400000, rate: 29 },
-        { level: 11, subsRef: 80, minRevenue: 15360000, rate: 30 }
+    // 2. IMPUESTOS (%)
+    // Actual: 16.1572%
+    // Futuro posible: 21.0996%
+    const TAX_PERCENTAGE = 16.1572; 
+
+    // 3. LÍMITES
+    const MAX_SUBS = 300;
+    const MAX_REVENUE = 60000000; 
+
+    // 4. META DE PRECIO PROMEDIO
+    const TARGET_PRICE = 229000;
+
+    // 5. DATOS DE LA TABLA
+    const COMMISSION_TABLE = [
+        { level: 0, subs: 0, minNet: 0, rate: 0 },
+        { level: 1, subs: 13, minNet: 2496000, rate: 6 },
+        { level: 2, subs: 20, minNet: 3840000, rate: 8 },
+        { level: 3, subs: 31, minNet: 5952000, rate: 15 },
+        { level: 4, subs: 39, minNet: 7488000, rate: 19 },
+        { level: 5, subs: 47, minNet: 9024000, rate: 22 },
+        { level: 6, subs: 55, minNet: 10560000, rate: 25 },
+        { level: 7, subs: 60, minNet: 11520000, rate: 26 },
+        { level: 8, subs: 65, minNet: 12480000, rate: 27 },
+        { level: 9, subs: 70, minNet: 13440000, rate: 28 },
+        { level: 10, subs: 75, minNet: 14400000, rate: 29 },
+        { level: 11, subs: 80, minNet: 15360000, rate: 30 }
     ];
 
-    const formatMoney = (amount) => {
-        return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
-    };
+    /* ================================================================ */
 
-    function renderTable(activeLevelIndex) {
-        const tbody = document.querySelector('#commissionTable tbody');
-        tbody.innerHTML = '';
-        tableData.forEach((row, index) => {
-            const tr = document.createElement('tr');
-            if (index === activeLevelIndex) tr.classList.add('highlight');
-            tr.innerHTML = `
-                <td>Nivel ${row.level}</td>
-                <td>${row.subsRef}</td>
-                <td>${formatMoney(row.minRevenue)}</td>
-                <td>${row.rate}%</td>
-            `;
-            tbody.appendChild(tr);
-        });
+    let grossRevenue = 0;
+
+    const moneyFormatter = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        maximumFractionDigits: 0
+    });
+
+    function init() {
+        grossRevenue = 18589000; 
+        document.getElementById('grossRevenueDisplay').value = formatNumberDisplay(grossRevenue);
+        document.getElementById('taxLabel').innerText = TAX_PERCENTAGE.toFixed(2);
+        
+        renderTable(-1); 
+        calculate();
+    }
+
+    // Validador General y Lógica de Restricciones
+    function validateAndCalculate() {
+        const subsTotalInput = document.getElementById('subsTotal');
+        const subsApprovedInput = document.getElementById('subsApproved');
+        const adherenceInput = document.getElementById('adherence');
+
+        let subsTotal = parseFloat(subsTotalInput.value) || 0;
+        let subsApproved = parseFloat(subsApprovedInput.value) || 0;
+        let adherence = parseFloat(adherenceInput.value) || 0;
+
+        // Regla 1: No negativos y máximos generales
+        if(subsTotal < 0) { subsTotal = 0; subsTotalInput.value = 0; }
+        if(subsTotal > MAX_SUBS) { subsTotal = MAX_SUBS; subsTotalInput.value = MAX_SUBS; }
+
+        // Regla 2: Aprobadas no puede ser mayor a Realizadas
+        // Si el usuario escribe más aprobadas que las realizadas actuales...
+        if (subsApproved > subsTotal) {
+            subsApproved = subsTotal;
+            subsApprovedInput.value = subsTotal; // Autocorregir input
+        }
+        if(subsApproved < 0) { subsApproved = 0; subsApprovedInput.value = 0; }
+
+        // Regla 3: Adherencia Max 100
+        if (adherence > 100) {
+            adherence = 100;
+            adherenceInput.value = 100;
+        }
+        if(adherence < 0) { adherence = 0; adherenceInput.value = 0; }
+
+        calculate();
+    }
+
+    function formatCurrencyInput(input) {
+        let valueStr = input.value.replace(/\D/g, '');
+        let value = valueStr === '' ? 0 : parseFloat(valueStr);
+
+        if (value > MAX_REVENUE) value = MAX_REVENUE;
+
+        grossRevenue = value;
+        
+        if (valueStr === '') {
+            input.value = '';
+        } else {
+            input.value = formatNumberDisplay(value);
+        }
+        
+        calculate();
+    }
+
+    function formatNumberDisplay(num) {
+        return '$ ' + new Intl.NumberFormat('es-CO').format(num);
     }
 
     function calculate() {
-        // 1. Obtener Inputs
-        const numSubs = parseFloat(document.getElementById('numSubs').value) || 0;
-        const grossRevenue = parseFloat(document.getElementById('grossInput').value) || 0;
-        const qaPerc = parseFloat(document.getElementById('qaPerc').value) || 0;
-        const adherPerc = parseFloat(document.getElementById('adherPerc').value) || 0;
+        const subsTotal = parseFloat(document.getElementById('subsTotal').value) || 0;
+        const subsApproved = parseFloat(document.getElementById('subsApproved').value) || 0;
+        const adherencePerc = parseFloat(document.getElementById('adherence').value) || 0;
+        const hasSeniorBonus = document.getElementById('seniorBonusCheck').checked;
 
-        // 2. Calcular Precio Promedio (Lógica Inversa)
-        // Evitamos división por cero
+        // --- Cálculos ---
+        
+        // 1. Precio Promedio
         let avgPrice = 0;
-        if (numSubs > 0) {
-            avgPrice = grossRevenue / numSubs;
+        if (subsApproved > 0) {
+            avgPrice = grossRevenue / subsApproved;
         }
 
-        // 3. Recaudo Real (Para la tabla)
-        const netRevenue = grossRevenue * NET_FACTOR;
+        // 2. QA (No puede pasar de 100% gracias a validateAndCalculate)
+        let qaPerc = 0;
+        if (subsTotal > 0) qaPerc = (subsApproved / subsTotal) * 100;
 
-        // 4. Buscar Nivel
-        let activeLevel = tableData[0];
+        // 3. Recaudo Real
+        const netRevenue = grossRevenue * (1 - (TAX_PERCENTAGE / 100));
+
+        // 4. Determinar Nivel
+        let activeRow = COMMISSION_TABLE[0];
         let activeIndex = 0;
-        for (let i = 0; i < tableData.length; i++) {
-            if (netRevenue >= tableData[i].minRevenue) {
-                activeLevel = tableData[i];
+        for (let i = 0; i < COMMISSION_TABLE.length; i++) {
+            if (netRevenue >= COMMISSION_TABLE[i].minNet) {
+                activeRow = COMMISSION_TABLE[i];
                 activeIndex = i;
             } else {
                 break;
             }
         }
 
-        // 5. Factores
-        const factorPrice = (TARGET_PRICE > 0) ? (avgPrice / TARGET_PRICE) : 0;
-        const factorQA = qaPerc / 100;
-        const factorAdher = adherPerc / 100;
-        const baseRateDec = activeLevel.rate / 100;
-
-        // 6. Comisión Total
-        const totalCommission = grossRevenue * baseRateDec * factorPrice * factorQA * factorAdher;
-
-        // 7. Actualizar Interfaz
-        document.getElementById('calcAvgPrice').innerText = formatMoney(avgPrice);
+        // 5. Métricas Individuales
+        const metricPrice = TARGET_PRICE > 0 ? (avgPrice / TARGET_PRICE) : 0;
+        const metricQA = qaPerc / 100;
+        const metricAdher = adherencePerc / 100;
         
-        // Indicador visual de precio
-        const statusSpan = document.getElementById('priceStatus');
+        // 6. KPI GLOBAL (Multiplicación)
+        const globalKPI = metricPrice * metricQA * metricAdher;
+
+        // 7. Comisión
+        const rateDecimal = activeRow.rate / 100;
+        let variableCommission = netRevenue * rateDecimal * globalKPI;
+        
+        let seniorBonusAmount = hasSeniorBonus ? SENIOR_BONUS_VALUE : 0;
+        let totalPay = variableCommission + seniorBonusAmount;
+
+        // --- Actualizar DOM ---
+        
+        // Métricas Pequeñas
+        document.getElementById('metricPrice').innerText = (metricPrice * 100).toFixed(1) + '%';
+        document.getElementById('metricQA').innerText = qaPerc.toFixed(1) + '%';
+        document.getElementById('metricAdher').innerText = adherencePerc + '%';
+        
+        // KPI Global Destacado
+        document.getElementById('totalKPI').innerText = (globalKPI * 100).toFixed(2) + '%';
+
+        // Resultados Tabla
+        document.getElementById('avgPrice').innerText = moneyFormatter.format(avgPrice);
+        const avgStatus = document.getElementById('avgStatus');
         if(avgPrice >= TARGET_PRICE) {
-            statusSpan.innerHTML = "✅ (¡Bien!)";
-            statusSpan.style.color = "green";
+            avgStatus.innerHTML = '<span class="status-badge status-ok">Meta OK</span>';
         } else {
-            statusSpan.innerHTML = "🔻 (Bajo)";
-            statusSpan.style.color = "red";
+            avgStatus.innerHTML = '<span class="status-badge status-bad">Bajo</span>';
         }
 
-        document.getElementById('netRevenue').innerText = formatMoney(netRevenue);
-        document.getElementById('levelReached').innerText = `Nivel ${activeLevel.level} (${activeLevel.rate}%)`;
+        document.getElementById('netRevenue').innerText = moneyFormatter.format(netRevenue);
+        document.getElementById('levelResult').innerText = `Nivel ${activeRow.level} (${activeRow.rate}%)`;
+
+        document.getElementById('totalPayment').innerText = moneyFormatter.format(totalPay);
         
-        document.getElementById('factorPrice').innerText = (factorPrice * 100).toFixed(1) + '%';
-        document.getElementById('factorQA').innerText = qaPerc + '%';
-        document.getElementById('factorAdher').innerText = adherPerc + '%';
-        
-        document.getElementById('totalCommission').innerText = formatMoney(totalCommission);
+        const bonusText = hasSeniorBonus 
+            ? `+ Bono Senior: ${moneyFormatter.format(seniorBonusAmount)}` 
+            : `Sin Bono Senior`;
+        document.getElementById('bonusNote').innerText = bonusText;
 
         renderTable(activeIndex);
     }
 
-    // Inicio
-    renderTable(-1);
-    calculate();
+    function renderTable(activeIndex) {
+        const tbody = document.querySelector('#levelsTable tbody');
+        tbody.innerHTML = '';
+        COMMISSION_TABLE.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            if (index === activeIndex) tr.classList.add('active-row');
+            tr.innerHTML = `
+                <td>Nivel ${row.level}</td>
+                <td>${row.subs}</td>
+                <td>${moneyFormatter.format(row.minNet)}</td>
+                <td>${row.rate}%</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    window.onload = init;
+
 </script>
 
 </body>
